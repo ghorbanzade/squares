@@ -15,15 +15,15 @@ function findIntersectionArea(boxes: BoxProps[]) {
 
 export default function Home() {
   const [surface, setSurface] = useState(100)
-  const update = (current: BoxProps) => {
+  const boxes: BoxProps[] = [
+    { id: 0, x: 0, y: 0, w: 200, h: 200 },
+    { id: 1, x: 0, y: 0, w: 250, h: 250 }
+  ]
+  const handleBoxUpdate = (current: BoxProps) => {
     boxes[current.id].x = current.x
     boxes[current.id].y = current.y
     setSurface(findIntersectionArea(boxes))
   }
-  const boxes: BoxProps[] = [
-    { id: 0, x: 0, y: 0, w: 200, h: 200, update },
-    { id: 1, x: 0, y: 0, w: 250, h: 250, update }
-  ]
   return (
     <>
       <Head>
@@ -38,8 +38,8 @@ export default function Home() {
           className="absolute min-h-[calc(100%_-_8rem)]
         min-w-[calc(100%_-_4rem)]"
         >
-          <Box data={boxes[0]} />
-          <Box data={boxes[1]} />
+          <Box data={boxes[0]} onUpdate={handleBoxUpdate} />
+          <Box data={boxes[1]} onUpdate={handleBoxUpdate} />
         </div>
       </main>
     </>
