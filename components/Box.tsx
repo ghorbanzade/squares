@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import {
   MouseEventHandler,
   MutableRefObject,
@@ -83,9 +84,7 @@ const useDraggable = ({
   return [ref, pressed, handleMouseDown]
 }
 
-export default function DraggableComponent() {
-  // it's nice to have a way to at least prevent element from
-  // getting dragged out of the page
+export default function Box() {
   const handleDrag = useCallback(
     ({ x, y }: { x: number; y: number }) => ({
       x: Math.max(0, x),
@@ -99,11 +98,14 @@ export default function DraggableComponent() {
   return (
     <div
       ref={ref as any}
-      className="grid place-content-center border border-sky-300 bg-sky-200 text-sky-500 bg-opacity-50"
+      className={clsx(
+        pressed ? 'border-sky-500' : 'border-sky-300',
+        'grid place-content-center border rounded-md bg-sky-200 text-sky-500 bg-opacity-50'
+      )}
       style={{ width: '200px', height: '200px' }}
       onMouseDown={handleMouseDown}
     >
-      <p>{pressed ? 'Dragging...' : 'Press to drag'}</p>
+      <p>{'Some Box'}</p>
     </div>
   )
 }
