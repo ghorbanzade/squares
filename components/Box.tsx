@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 import useDraggable from '@/hooks/useDraggable'
 import useWindowDimensions from '@/hooks/useWindowDimensions'
 import clsx from 'clsx'
@@ -29,7 +31,6 @@ export default function Box({
     onUpdate(out)
     return out
   }, [])
-
   const [ref, pressed, handleMouseDown] = useDraggable({ onDrag: handleDrag })
 
   return (

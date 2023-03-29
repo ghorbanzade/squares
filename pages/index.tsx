@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 import Head from 'next/head'
 import { useState } from 'react'
 import Box, { BoxProps } from '@/components/Box'
