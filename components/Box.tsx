@@ -4,30 +4,19 @@ import {
   useCallback,
   useEffect,
   useRef,
-  useState,
-} from "react";
-
-const quickAndDirtyStyle = {
-  width: "200px",
-  height: "200px",
-  background: "#FF9900",
-  color: "#FFFFFF",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-};
+  useState
+} from 'react'
 
 const useDraggable = ({
-  onDrag = (v: { x: number; y: number }) => ({ x: v.x, y: v.y }),
+  onDrag = (v: { x: number; y: number }) => ({ x: v.x, y: v.y })
 } = {}): [MutableRefObject<unknown>, boolean, MouseEventHandler] => {
-  // this state doesn't change often, so it's fine
-  const [pressed, setPressed] = useState(false);
+  const [pressed, setPressed] = useState(false)
 
   // do not store position in useState! even if you useEffect on
   // it and update `transform` CSS property, React still rerenders
   // on every state change, and it LAGS
-  const position = useRef({ x: 0, y: 0 });
-  const ref = useRef();
+  const position = useRef({ x: 0, y: 0 })
+  const ref = useRef()
 
   // handlers must be wrapped into `useCallback`. even though
   // resubscribing to `mousedown` on every tick is quite cheap
@@ -39,34 +28,12 @@ const useDraggable = ({
     // don't forget to disable text selection during drag and drop
     // operations
     // e.target.style.userSelect = "none";
-    setPressed(true);
-  }, []);
-
-  // TODO:
-  // we've moved the code into the hook, and it would be weird to
-  // return `ref` and `handleMouseDown` to be set on the same element
-  // why not just do the job on our own here and use a function-ref
-  // to subscribe to `mousedown` too? it would go like this:
-  // const ref = useRef();
-  // const unsubscribe = useRef();
-  // const legacyRef = useCallback((elem) => {
-  //   ref.current = elem;
-  //   if (unsubscribe.current) {
-  //     unsubscribe.current();
-  //   }
-  //   if (elem) {
-  //     elem.addEventListener('mousedown', handleMouseDown);
-  //     unsubscribe.current = () => {
-  //       elem.removeEventListener('mousedown', handleMouseDown);
-  //     };
-  //   }
-  // }, []);
-  // then keep using `ref` to the end of this hook, but
-  // return a `[legacyRef, pressed]`
+    setPressed(true)
+  }, [])
 
   useEffect(() => {
     if (!pressed) {
-      return;
+      return
     }
     // subscribe to mousemove only when pressed, otherwise it will lag
     // even when you're not dragging
@@ -76,49 +43,45 @@ const useDraggable = ({
     // lag 1 frame behind cursor, and it will appear to be lagging
     // even at 60 FPS
     const handleMouseMove = (event: MouseEvent) => {
-      // needed for TypeScript anyway
       if (!ref.current || !position.current) {
-        return;
+        return
       }
-      const pos = position.current;
+      const pos = position.current
       // it's important to save it into variable here,
       // otherwise we might capture reference to an element
       // that was long gone. not really sure what's correct
       // behavior for a case when you've been scrolling, and
       // the target element was replaced. probably some formulae
       // needed to handle that case. TODO
-      const elem: any = ref.current;
+      const elem: any = ref.current
       position.current = onDrag({
         x: pos.x + event.movementX,
-        y: pos.y + event.movementY,
-      });
-      elem.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-    };
+        y: pos.y + event.movementY
+      })
+      elem.style.transform = `translate(${pos.x}px, ${pos.y}px)`
+    }
     const handleMouseUp = (e: MouseEvent) => {
       // e.target.style.userSelect = "auto";
-      setPressed(false);
-    };
+      setPressed(false)
+    }
     // subscribe to mousemove and mouseup on document, otherwise you
     // can escape bounds of element while dragging and get stuck
     // dragging it forever
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
     // if `onDrag` wasn't defined with `useCallback`, we'd have to
     // resubscribe to 2 DOM events here.
-  }, [pressed, onDrag]);
+  }, [pressed, onDrag])
 
   // actually it makes sense to return an array only when
   // you expect that on the caller side all of the fields
   // will be usually renamed
-  return [ref, pressed, handleMouseDown];
-
-  // > seems the best of them all to me
-  // this code doesn't look pretty anymore, huh?
-};
+  return [ref, pressed, handleMouseDown]
+}
 
 export default function DraggableComponent() {
   // it's nice to have a way to at least prevent element from
@@ -126,20 +89,21 @@ export default function DraggableComponent() {
   const handleDrag = useCallback(
     ({ x, y }: { x: number; y: number }) => ({
       x: Math.max(0, x),
-      y: Math.max(0, y),
+      y: Math.max(0, y)
     }),
     []
-  );
+  )
 
-  const [ref, pressed, handleMouseDown] = useDraggable({ onDrag: handleDrag });
+  const [ref, pressed, handleMouseDown] = useDraggable({ onDrag: handleDrag })
 
   return (
     <div
       ref={ref as any}
-      style={quickAndDirtyStyle}
+      className="grid place-content-center border border-sky-300 bg-sky-200 text-sky-500 bg-opacity-50"
+      style={{ width: '200px', height: '200px' }}
       onMouseDown={handleMouseDown}
     >
-      <p>{pressed ? "Dragging..." : "Press to drag"}</p>
+      <p>{pressed ? 'Dragging...' : 'Press to drag'}</p>
     </div>
-  );
+  )
 }
