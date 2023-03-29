@@ -8,7 +8,14 @@ import {
   useState
 } from 'react'
 
-export type BoxPosition = { x: number; y: number }
+export interface BoxProps {
+  id: number
+  x: number
+  y: number
+  w: number
+  h: number
+  update: (pos: BoxProps) => void
+}
 
 const useDraggable = ({
   onDrag = (v: { x: number; y: number }) => ({ x: v.x, y: v.y })
@@ -49,18 +56,10 @@ const useDraggable = ({
   return [ref, pressed, handleMouseDown]
 }
 
-interface BoxProps {
-  name: string
-  updatePosition: (pos: BoxPosition) => void
-}
-
-export default function Box(props: BoxProps) {
+export default function Box({ data }: { data: BoxProps }) {
   const handleDrag = useCallback(({ x, y }: { x: number; y: number }) => {
-    const out = {
-      x: Math.max(0, x),
-      y: Math.max(0, y)
-    }
-    props.updatePosition(out)
+    const out = { ...data, x: Math.max(0, x), y: Math.max(0, y) }
+    data.update(out)
     return out
   }, [])
 
@@ -78,7 +77,7 @@ export default function Box(props: BoxProps) {
       style={{ width: '200px', height: '200px' }}
       onMouseDown={handleMouseDown}
     >
-      <span className="font-medium">{props.name}</span>
+      <span className="font-medium">Box {data.id + 1}</span>
     </div>
   )
 }
