@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { useState } from 'react'
 import Box from '@/components/Box'
-import Box2, { makeBox } from '@/components/Box2'
 
 interface HeaderProps {
   surface: number
@@ -9,7 +8,7 @@ interface HeaderProps {
 
 function Header(props: HeaderProps) {
   return (
-    <header className="bg-slate-900 h-16 p-4 text-white font-medium justify-between flex items-center">
+    <header className="flex h-16 items-center justify-between bg-slate-900 p-4 font-medium text-white">
       <div>
         <h1 className="text-xl">Two Squares</h1>
         <h2>Find the intersection between the two boxes</h2>
@@ -21,33 +20,6 @@ function Header(props: HeaderProps) {
 
 export default function Home() {
   const [surface, setSurface] = useState(0)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [selectedBox, setSelectedBox] = useState<string | null>(null)
-  const boxes = [makeBox(1)]
-  const handleMouseMove = (ev: React.MouseEvent<HTMLElement>) => {
-    setMousePosition({ x: ev.pageX, y: ev.pageY })
-    if (selectedBox) {
-      console.log('hello')
-    }
-  }
-  const handleMouseDown = (ev: React.MouseEvent<HTMLElement>) => {
-    const { x, y } = { x: ev.pageX - 32, y: ev.pageY - 96 }
-    const box = boxes.find(
-      (box) => x < box.left + box.width && y < box.left + box.height
-    )
-    if (box) {
-      console.log(mousePosition, box.id)
-      setSelectedBox(box.id)
-    } else {
-      console.log('mousedown', ev)
-    }
-  }
-  const handleMouseUp = (ev: React.MouseEvent<HTMLElement>) => {
-    console.log('mouseup', ev)
-    if (selectedBox) {
-      setSelectedBox(null)
-    }
-  }
   return (
     <>
       <Head>
@@ -57,17 +29,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header surface={surface} />
-      <main className="bg-slate-100 p-8 min-h-[calc(100vh_-_4rem)]">
+      <main className="min-h-[calc(100vh_-_4rem)] bg-slate-100 p-8">
         <div
-          className="absolute min-w-[calc(100%_-_4rem)]
-        min-h-[calc(100%_-_8rem)]"
-          onMouseMove={handleMouseMove}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+          className="absolute min-h-[calc(100%_-_8rem)]
+        min-w-[calc(100%_-_4rem)]"
         >
-          {/* {boxes.map((box) => (
-            <Box2 key={box.id} data={box} />
-          ))} */}
           <Box />
           <Box />
         </div>
