@@ -1,19 +1,16 @@
 import Head from 'next/head'
 import { useState } from 'react'
 import Box, { BoxProps } from '@/components/Box'
+import Header from '@/components/Header'
 
-type HeaderProps = { surface: number }
-
-function Header(props: HeaderProps) {
-  return (
-    <header className="flex h-16 items-center justify-between bg-slate-900 p-4 font-medium text-white">
-      <div>
-        <h1 className="text-xl">Two Squares</h1>
-        <h2>Find the intersection between the two boxes</h2>
-      </div>
-      <span>Surface Area: {props.surface}</span>
-    </header>
-  )
+function findIntersectionArea(boxes: BoxProps[]) {
+  const [a, b] = [boxes[0], boxes[1]]
+  const dx = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)
+  const dy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y)
+  const intersection = dx > 0 && dy > 0 ? Math.round(dx * dy) : 0
+  const total = Math.min(a.w, b.w) * Math.min(a.h, b.h)
+  const percent = Math.round((intersection / total) * 100)
+  return percent
 }
 
 export default function Home() {
@@ -21,7 +18,7 @@ export default function Home() {
   const update = (current: BoxProps) => {
     boxes[current.id].x = current.x
     boxes[current.id].y = current.y
-    setSurface(Math.round(Math.random()))
+    setSurface(findIntersectionArea(boxes))
   }
   const boxes: BoxProps[] = [
     { id: 0, x: 0, y: 0, w: 200, h: 200, update },
