@@ -1,3 +1,4 @@
+import useWindowDimensions from '@/hooks/useWindowDimensions'
 import clsx from 'clsx'
 import {
   MouseEventHandler,
@@ -57,8 +58,13 @@ const useDraggable = ({
 }
 
 export default function Box({ data }: { data: BoxProps }) {
+  const { width, height } = useWindowDimensions()
   const handleDrag = useCallback(({ x, y }: { x: number; y: number }) => {
-    const out = { ...data, x: Math.max(0, x), y: Math.max(0, y) }
+    const out = {
+      ...data,
+      x: Math.min(Math.max(0, x), width - data.w - 32 - 32),
+      y: Math.min(Math.max(0, y), height - data.h - 96 - 32)
+    }
     data.update(out)
     return out
   }, [])
