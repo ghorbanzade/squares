@@ -44,9 +44,7 @@ const useDraggable = ({
       })
       elem.style.transform = `translate(${pos.x}px, ${pos.y}px)`
     }
-    const handleMouseUp = (e: MouseEvent) => {
-      setPressed(false)
-    }
+    const handleMouseUp = () => setPressed(false)
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
     return () => {
