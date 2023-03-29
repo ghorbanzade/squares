@@ -8,6 +8,8 @@ import {
   useState
 } from 'react'
 
+export type BoxPosition = { x: number; y: number }
+
 const useDraggable = ({
   onDrag = (v: { x: number; y: number }) => ({ x: v.x, y: v.y })
 } = {}): [MutableRefObject<unknown>, boolean, MouseEventHandler] => {
@@ -15,7 +17,6 @@ const useDraggable = ({
   const position = useRef({ x: 0, y: 0 })
   const ref = useRef()
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    // e.target.style.userSelect = "none";
     setPressed(true)
   }, [])
 
@@ -36,7 +37,6 @@ const useDraggable = ({
       elem.style.transform = `translate(${pos.x}px, ${pos.y}px)`
     }
     const handleMouseUp = (e: MouseEvent) => {
-      // e.target.style.userSelect = "auto";
       setPressed(false)
     }
     document.addEventListener('mousemove', handleMouseMove)
@@ -49,14 +49,20 @@ const useDraggable = ({
   return [ref, pressed, handleMouseDown]
 }
 
-export default function Box() {
-  const handleDrag = useCallback(
-    ({ x, y }: { x: number; y: number }) => ({
+interface BoxProps {
+  name: string
+  updatePosition: (pos: BoxPosition) => void
+}
+
+export default function Box(props: BoxProps) {
+  const handleDrag = useCallback(({ x, y }: { x: number; y: number }) => {
+    const out = {
       x: Math.max(0, x),
       y: Math.max(0, y)
-    }),
-    []
-  )
+    }
+    props.updatePosition(out)
+    return out
+  }, [])
 
   const [ref, pressed, handleMouseDown] = useDraggable({ onDrag: handleDrag })
 
@@ -64,13 +70,15 @@ export default function Box() {
     <div
       ref={ref as any}
       className={clsx(
-        pressed ? 'border-sky-400 shadow-md' : 'border-sky-300',
-        'absolute grid place-content-center rounded-md border-2 bg-sky-200 bg-opacity-50 font-medium text-sky-800'
+        pressed
+          ? 'cursor-grabbing border-sky-400 shadow-md'
+          : 'cursor-grab border-sky-300',
+        'absolute grid select-none place-content-center rounded-md border-2 bg-sky-200 bg-opacity-50 text-sky-800'
       )}
       style={{ width: '200px', height: '200px' }}
       onMouseDown={handleMouseDown}
     >
-      <p>{'Some Box'}</p>
+      <span className="font-medium">{props.name}</span>
     </div>
   )
 }

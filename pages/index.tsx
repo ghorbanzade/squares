@@ -1,10 +1,8 @@
 import Head from 'next/head'
 import { useState } from 'react'
-import Box from '@/components/Box'
+import Box, { BoxPosition } from '@/components/Box'
 
-interface HeaderProps {
-  surface: number
-}
+type HeaderProps = { surface: number }
 
 function Header(props: HeaderProps) {
   return (
@@ -18,8 +16,19 @@ function Header(props: HeaderProps) {
   )
 }
 
+type BoxProps = { x: number; y: number; w: number; h: number }
+
 export default function Home() {
   const [surface, setSurface] = useState(0)
+  const boxes: BoxProps[] = [
+    { x: 0, y: 0, w: 200, h: 200 },
+    { x: 0, y: 0, w: 200, h: 200 }
+  ]
+  const update = (box: BoxProps, newPosition: BoxPosition) => {
+    box.x = newPosition.x
+    box.y = newPosition.y
+    setSurface(Math.round(Math.random()))
+  }
   return (
     <>
       <Head>
@@ -34,8 +43,14 @@ export default function Home() {
           className="absolute min-h-[calc(100%_-_8rem)]
         min-w-[calc(100%_-_4rem)]"
         >
-          <Box />
-          <Box />
+          <Box
+            name="Box 1"
+            updatePosition={(pos: BoxPosition) => update(boxes[0], pos)}
+          />
+          <Box
+            name="Box 2"
+            updatePosition={(pos: BoxPosition) => update(boxes[1], pos)}
+          />
         </div>
       </main>
     </>
