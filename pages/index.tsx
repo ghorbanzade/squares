@@ -14,7 +14,7 @@ function findIntersectionArea(boxes: BoxProps[]) {
 }
 
 export default function Home() {
-  const [surface, setSurface] = useState(0)
+  const [surface, setSurface] = useState(100)
   const update = (current: BoxProps) => {
     boxes[current.id].x = current.x
     boxes[current.id].y = current.y
@@ -22,7 +22,7 @@ export default function Home() {
   }
   const boxes: BoxProps[] = [
     { id: 0, x: 0, y: 0, w: 200, h: 200, update },
-    { id: 1, x: 0, y: 0, w: 200, h: 200, update }
+    { id: 1, x: 0, y: 0, w: 250, h: 250, update }
   ]
   return (
     <>

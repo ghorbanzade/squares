@@ -74,7 +74,7 @@ export default function Box({ data }: { data: BoxProps }) {
           : 'cursor-grab border-sky-300',
         'absolute grid select-none place-content-center rounded-md border-2 bg-sky-200 bg-opacity-50 text-sky-800'
       )}
-      style={{ width: '200px', height: '200px' }}
+      style={{ width: `${data.w}px`, height: `${data.h}px` }}
       onMouseDown={handleMouseDown}
     >
       <span className="font-medium">Box {data.id + 1}</span>
