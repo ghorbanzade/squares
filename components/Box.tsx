@@ -99,8 +99,8 @@ export default function Box() {
     <div
       ref={ref as any}
       className={clsx(
-        pressed ? 'border-sky-500' : 'border-sky-300',
-        'grid place-content-center border rounded-md bg-sky-200 text-sky-500 bg-opacity-50'
+        pressed ? 'border-sky-400 shadow-md' : 'border-sky-300',
+        'grid place-content-center rounded-md border-2 bg-sky-200 bg-opacity-50 font-medium text-sky-800'
       )}
       style={{ width: '200px', height: '200px' }}
       onMouseDown={handleMouseDown}
